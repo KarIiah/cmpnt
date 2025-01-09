@@ -1,9 +1,9 @@
 <?php
 
-include_once '../entities/Entry.php';
+include_once '../../entities/Entry.php';
 include_once '../database/EntryController.php';
-include_once '../views/createEntry.php';
-include_once '../controller/ErrorHandler.php';
+include_once '../../views/createEntry.php';
+include_once '../errorHandling/ErrorHandler.php';
 
 $errorHandler = new ErrorHandler();
 

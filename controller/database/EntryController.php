@@ -1,7 +1,7 @@
 <?php
 
-include_once '../entities/Entry.php';
-include_once '../controller/ErrorHandler.php';
+include_once '../../entities/Entry.php';
+include_once '../errorHandling/ErrorHandler.php';
 
 class EntryController
 {

@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <form method="POST" action="/controller/createEntryHandler.php">
+    <form method="POST" action="/controller/publicHandler/createEntryHandler.php">
         <label for="firstName">Vorname: </label>
         <input required type="text" maxlength="50" id="firstName" name="firstName" placeholder="Vorname...">
         <br> <br>

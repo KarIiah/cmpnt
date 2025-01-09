@@ -11,6 +11,6 @@ class ErrorHandler
     public function handleException(Exception $exception): void
     {
         $errorMessage = $exception->getMessage();
-        include_once '../views/errorPage.php';
+        include_once '../../views/errorPage.php';
     }
 }

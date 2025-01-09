@@ -8,11 +8,11 @@
 </head>
 
 <body>
-    <button onclick="location.href='../controller/createEntryHandler.php'">Neuer Eintrag</button>
+    <button onclick="location.href='../publicHandler/createEntryHandler.php'">Neuer Eintrag</button>
 
     <br> <hr> <br>
 
-    <form method="POST" action="/controller/getEntriesHandler.php">
+    <form method="POST" action="/controller/publicHandler/getEntriesHandler.php">
         <label for="search">T9 Suche: </label>
         <input type="number" maxlength="50" id="search" name="search" placeholder="..."><br>
         <button type="submit">Suchen</button>

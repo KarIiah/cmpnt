@@ -1,7 +1,7 @@
 <?php
 
 include_once '../database/EntryController.php';
-include_once '../controller/ErrorHandler.php';
+include_once '../errorHandling/ErrorHandler.php';
 
 $errorHandler = new ErrorHandler();
 
@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $entries = $controller->getEntries();
 
-        include_once '../views/showEntries.php';
+        include_once '../../views/showEntries.php';
     } catch (PDOException $e) {
         $errorHandler->handleException(new PDOException($e->getMessage()));
     }
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_POST['search'])) {
 
         $entries = $controller->getEntries($search);
 
-        include_once '../views/showEntries.php';
+        include_once '../../views/showEntries.php';
     } catch (PDOException $e) {
         $errorHandler->handleException(new PDOException($e->getMessage()));
     }

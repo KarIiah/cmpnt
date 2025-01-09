@@ -1,1 +1,1 @@
-DirectoryIndex ./controller/getEntriesHandler.php
+DirectoryIndex ./controller/publicHandler/getEntriesHandler.php
