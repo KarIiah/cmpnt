@@ -32,10 +32,12 @@ class EntryController
      * @param Entry $data Objekt der Klasse Entry
      * @return void verweist auf die Fehlerseite, sobald ein Fehler auftritt
      */
-    public function insertEntry(Entry $data)
+    public function insertEntry(Entry $data): void
     {
         $firstName = $data->getFirstName();
         $lastName = $data->getLastName();
+        $firstNameT9 = $data->getFirstNameT9();
+        $lastNameT9 = $data->getLastNameT9();
         $telephoneNr = $data->getTelephoneNr();
 
         if (empty($firstName) || empty($lastName) || empty($telephoneNr)) {
@@ -45,13 +47,15 @@ class EntryController
         try {
             // SQL statement vorbereiten
             $query = $this->pdo->prepare("
-                INSERT INTO Entry (firstName, lastName, telephoneNr) 
-                VALUES (:firstName, :lastName, :telephoneNr)
+                INSERT INTO Entry (firstName, lastName, telephoneNr, firstNameT9, lastNameT9) 
+                VALUES (:firstName, :lastName, :telephoneNr, :firstNameT9, :lastNameT9)
             ");
 
             // Parameter binden
             $query->bindParam(':firstName', $firstName);
             $query->bindParam(':lastName', $lastName);
+            $query->bindParam(':firstNameT9', $firstNameT9);
+            $query->bindParam(':lastNameT9', $lastNameT9);
             $query->bindParam(':telephoneNr', $telephoneNr);
 
             $query->execute();
@@ -68,11 +72,18 @@ class EntryController
      */
     public function getEntries($search = null): array {
         try {
-            $where = $this->handleSearch($search);
-            $sql = "SELECT firstName, lastName, telephoneNr FROM Entry " . $where;
+            $where = "";
 
-            // SQL statement vorbereiten
-            $query = $this->pdo->prepare($sql);
+            if (!empty($search)) {
+                $where = " WHERE firstNameT9 LIKE :search OR lastNameT9 LIKE :search";
+            }
+
+            $query = $this->pdo->prepare("SELECT firstName, lastName, telephoneNr FROM Entry " . $where);
+            
+            if (!empty($search)) {
+                $likeSearch = "%$search%";
+                $query->bindParam(':search', $likeSearch);
+            }
 
             $query->execute();
             return $query->fetchAll(PDO::FETCH_CLASS, 'Entry');
@@ -80,57 +91,5 @@ class EntryController
             $this->errorHandler->handleException(new PDOException($e->getMessage()));
             return [];
         }
-    }
-
-    /**
-     * iteriert die eingegebenen Zahlen der Suche durch und mappt diese zu den zugehörigen T9-chars und joined alle
-     * Kombinationen in einen WHERE String
-     *
-     * @param Number $search
-     * @return string gibt einen WHERE String zurück, der an die SQL gejoined werden kann
-     */
-    private function handleSearch($search): string {
-        $where = "";
-        if (!empty($search)) {
-
-            $t9Mapping = [
-                '1' => ['a', 'b', 'c'],
-                '2' => ['d', 'e', 'f'],
-                '3' => ['g', 'h', 'i'],
-                '4' => ['j', 'k', 'l'],
-                '5' => ['m', 'n', 'o'],
-                '6' => ['p', 'q', 'r', 's'],
-                '7' => ['t', 'u', 'v'],
-                '8' => ['w', 'x', 'y', 'z'],
-                '9' => []
-            ];
-
-            $t9Combinations = [''];
-
-            for ($i = 0; $i < strlen($search); $i++) {
-                $digit = $search[$i];
-                if (isset($t9Mapping[$digit])) {
-                    $newCombinations = [];
-                    foreach ($t9Combinations as $combo) {
-                        foreach ($t9Mapping[$digit] as $char) {
-                            $newCombinations[] = $combo . $char;
-                        }
-                    }
-                    $t9Combinations = $newCombinations;
-                }
-            }
-
-            $conditions = [];
-            foreach ($t9Combinations as $combination) {
-                $conditions[] = "firstName LIKE '" . $combination . "%'";
-                $conditions[] = "lastName LIKE '" . $combination . "%'";
-            }
-
-            if (count($conditions) > 0) {
-                $where = "WHERE (" . implode(" OR ", $conditions) . ")";
-            }
-        }
-
-        return $where;
     }
 }

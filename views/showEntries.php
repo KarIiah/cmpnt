@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <button onclick="location.href='../publicHandler/createEntryHandler.php'">Neuer Eintrag</button>
+    <button onclick="location.href='/controller/publicHandler/createEntryHandler.php'">Neuer Eintrag</button>
 
     <br> <hr> <br>
 
